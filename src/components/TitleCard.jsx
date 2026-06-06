@@ -2,18 +2,17 @@ import { useState, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useApp } from '../context/AppContext'
 import { useWatchlist } from '../hooks/useWatchlist'
-import { getCachedTMDB, posterUrl } from '../lib/tmdb'
+import { posterUrl } from '../lib/tmdb'
 import Badge from './ui/Badge'
 import StarRating from './ui/StarRating'
 
-function PosterImage({ title, tmdbId, tmdbType }) {
+function PosterImage({ title }) {
   const [failed, setFailed] = useState(false)
-  const cached = getCachedTMDB(tmdbId, tmdbType)
-  const src = cached?.posterPath ? posterUrl(cached.posterPath, 'w92') : null
+  const src = title.posterPath ? posterUrl(title.posterPath, 'w92') : null
 
   if (!src || failed) {
-    const initials = title.split(/\s+/).slice(0, 2).map((w) => w[0]).join('').toUpperCase()
-    const hue = title.charCodeAt(0) * 7 % 360
+    const initials = title.title.split(/\s+/).slice(0, 2).map((w) => w[0]).join('').toUpperCase()
+    const hue = title.title.charCodeAt(0) * 7 % 360
     return (
       <div
         className="w-12 h-[72px] rounded-lg flex items-center justify-center text-sm font-bold text-white shrink-0"
@@ -104,7 +103,7 @@ export default function TitleCard({ title, onOpenDetail, batchMode, isBatchSelec
         )}
 
         {/* Poster */}
-        <PosterImage title={title.title} tmdbId={title.tmdbId} tmdbType={title.tmdbType} />
+        <PosterImage title={title} />
 
         {/* Info */}
         <div className="flex-1 min-w-0">

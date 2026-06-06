@@ -1,17 +1,16 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { useApp } from '../context/AppContext'
 import { useWatchlist } from '../hooks/useWatchlist'
-import { getCachedTMDB, getTMDBData, posterUrl, backdropUrl } from '../lib/tmdb'
-import { MCU_TITLES, byId } from '../data/mcu'
+import { posterUrl, backdropUrl } from '../lib/tmdb'
+import { byId } from '../data/mcu'
 import Badge from './ui/Badge'
 import StarRating from './ui/StarRating'
 
 function ConnectedTitle({ id, onOpen }) {
   const t = byId[id]
   if (!t) return null
-  const cached = getCachedTMDB(t.tmdbId, t.tmdbType)
-  const src = cached?.posterPath ? posterUrl(cached.posterPath, 'w92') : null
+  const src = t.posterPath ? posterUrl(t.posterPath, 'w92') : null
   return (
     <button
       onClick={() => onOpen(t)}
@@ -31,18 +30,11 @@ function ConnectedTitle({ id, onOpen }) {
 export default function TitleDetail({ title, onClose, onOpenOther }) {
   const { progress, watchedSet } = useApp()
   const { toggleWatched, saveRating, saveNote } = useWatchlist()
-  const [tmdbData, setTmdbData]   = useState(() => getCachedTMDB(title.tmdbId, title.tmdbType))
-  const [note, setNote]           = useState(progress[title.id]?.note ?? '')
-  const [saving, setSaving]       = useState(false)
+  const [note, setNote]   = useState(progress[title.id]?.note ?? '')
+  const [saving, setSaving] = useState(false)
 
   const watched = watchedSet.has(title.id)
   const rating  = progress[title.id]?.rating ?? 0
-
-  useEffect(() => {
-    if (!tmdbData && title.tmdbId) {
-      getTMDBData(title.tmdbId, title.tmdbType).then((d) => { if (d) setTmdbData(d) })
-    }
-  }, [title.tmdbId, title.tmdbType]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleNoteBlur = useCallback(async () => {
     setSaving(true)
@@ -55,9 +47,9 @@ export default function TitleDetail({ title, onClose, onOpenOther }) {
     navigator.clipboard?.writeText(text)
   }
 
-  const posterSrc   = tmdbData?.posterPath   ? posterUrl(tmdbData.posterPath, 'w300')   : null
-  const backdropSrc = tmdbData?.backdropPath ? backdropUrl(tmdbData.backdropPath, 'w780') : null
-  const description = tmdbData?.description ?? ''
+  const posterSrc   = title.posterPath   ? posterUrl(title.posterPath, 'w300')   : null
+  const backdropSrc = title.backdropPath ? backdropUrl(title.backdropPath, 'w780') : null
+  const description = title.description  ?? ''
 
   const hue = title.title.charCodeAt(0) * 7 % 360
 
@@ -90,7 +82,7 @@ export default function TitleDetail({ title, onClose, onOpenOther }) {
             <h2 className="font-heading text-xl text-white leading-tight">{title.title}</h2>
             <p className="text-xs text-muted">
               Phase {title.phase} · {title.setYear} · {title.runtime}h
-              {tmdbData?.imdbRating ? ` · ⭐ ${tmdbData.imdbRating}` : ''}
+              {title.imdbRating ? ` · ⭐ ${title.imdbRating}` : ''}
             </p>
           </div>
         </div>

@@ -111,7 +111,7 @@ export function AppProvider({ children }) {
       const [{ data: prog }, { data: ach }, { data: settings }] = await Promise.all([
         supabase.from('progress').select('*').eq('user_id', user.id),
         supabase.from('achievements_unlocked').select('*').eq('user_id', user.id),
-        supabase.from('user_settings').select('*').eq('user_id', user.id).single(),
+        supabase.from('user_settings').select('*').eq('user_id', user.id).maybeSingle(),
       ])
 
       // Merge progress: Supabase wins on conflict by updated_at

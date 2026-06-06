@@ -9,15 +9,16 @@ import Header from './components/layout/Header'
 import ToastContainer from './components/ui/Toast'
 import OnboardingOverlay from './components/OnboardingOverlay'
 import ErrorBoundary from './components/ErrorBoundary'
+// AuthCallback is imported eagerly — it must handle hooks before chunks load
+import AuthCallback from './pages/AuthCallback'
 
-// Lazy-load pages for code splitting
+// Lazy-load heavy pages for code splitting
 const Home         = lazy(() => import('./pages/Home'))
 const Watchlist    = lazy(() => import('./pages/Watchlist'))
 const Progress     = lazy(() => import('./pages/Progress'))
 const Paths        = lazy(() => import('./pages/Paths'))
 const Achievements = lazy(() => import('./pages/Achievements'))
 const Settings     = lazy(() => import('./pages/Settings'))
-const AuthCallback = lazy(() => import('./pages/AuthCallback'))
 
 function PageLoader() {
   return (
@@ -36,7 +37,7 @@ export default function App() {
     if (!settings.onboardingComplete) setShowOnboarding(true)
   }, [settings.onboardingComplete])
 
-  // Register service worker
+  // Register service worker once
   useEffect(() => {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js').catch(() => {})
@@ -45,13 +46,12 @@ export default function App() {
 
   const isCallback = location.pathname === '/auth/callback'
 
+  // Auth callback: render bare (no nav chrome, no onboarding)
   if (isCallback) {
     return (
       <ErrorBoundary>
-        <Suspense fallback={<PageLoader />}>
-          <AuthCallback />
-        </Suspense>
         <ToastContainer />
+        <AuthCallback />
       </ErrorBoundary>
     )
   }
@@ -66,37 +66,28 @@ export default function App() {
           </div>
         )}
 
-        {/* Toasts */}
         <ToastContainer />
 
-        {/* Onboarding */}
         {showOnboarding && (
           <OnboardingOverlay onDone={() => setShowOnboarding(false)} />
         )}
 
-        {/* Layout shell */}
         <div className="lg:flex">
-          {/* Desktop sidebar */}
           <Sidebar />
-
-          {/* Main content area */}
           <div className="flex-1 lg:pl-60">
-            {/* Mobile header */}
             <Header />
-
             <main className={`px-4 py-4 lg:px-8 lg:py-6 ${!online ? 'mt-7' : ''}`}>
               <AnimatePresence mode="wait">
                 <Suspense fallback={<PageLoader />}>
                   <Routes location={location} key={location.pathname}>
-                    <Route path="/" element={<Navigate to="/home" replace />} />
+                    <Route path="/"              element={<Navigate to="/home" replace />} />
                     <Route path="/home"          element={<Home />} />
                     <Route path="/watchlist"     element={<Watchlist />} />
                     <Route path="/progress"      element={<Progress />} />
                     <Route path="/paths"         element={<Paths />} />
                     <Route path="/achievements"  element={<Achievements />} />
                     <Route path="/settings"      element={<Settings />} />
-                    <Route path="/auth/callback" element={<AuthCallback />} />
-                    <Route path="*"             element={<Navigate to="/home" replace />} />
+                    <Route path="*"              element={<Navigate to="/home" replace />} />
                   </Routes>
                 </Suspense>
               </AnimatePresence>
@@ -104,7 +95,6 @@ export default function App() {
           </div>
         </div>
 
-        {/* Mobile bottom nav */}
         <BottomNav />
       </div>
     </ErrorBoundary>

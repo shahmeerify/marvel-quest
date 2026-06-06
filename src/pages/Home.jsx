@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext'
 import { useWatchlist } from '../hooks/useWatchlist'
 import { MCU_TITLES, TOTAL } from '../data/mcu'
 import { getDailyTrivia } from '../data/trivia'
-import { getCachedTMDB, posterUrl } from '../lib/tmdb'
+import { posterUrl } from '../lib/tmdb'
 import CountdownTimer from '../components/CountdownTimer'
 import ProgressRing from '../components/ui/ProgressRing'
 import BottomSheet from '../components/ui/BottomSheet'
@@ -27,8 +27,7 @@ function StatCard({ icon, value, label }) {
 }
 
 function UpNextCard({ title, onOpen }) {
-  const cached = getCachedTMDB(title.tmdbId, title.tmdbType)
-  const src = cached?.posterPath ? posterUrl(cached.posterPath, 'w92') : null
+  const src = title.posterPath ? posterUrl(title.posterPath, 'w92') : null
   const hue = title.title.charCodeAt(0) * 7 % 360
 
   return (
@@ -73,8 +72,7 @@ export default function Home() {
   const pathWatched = pathTitles.filter((t) => watchedSet.has(t.id)).length
   const pathPct     = Math.round((pathWatched / Math.max(pathTitles.length, 1)) * 100)
 
-  const nextCached = nextTitle ? getCachedTMDB(nextTitle.tmdbId, nextTitle.tmdbType) : null
-  const nextSrc    = nextCached?.posterPath ? posterUrl(nextCached.posterPath, 'w185') : null
+  const nextSrc = nextTitle?.posterPath ? posterUrl(nextTitle.posterPath, 'w185') : null
 
   return (
     <motion.div {...PAGE} transition={{ duration: 0.2 }} className="space-y-5 pb-24 lg:pb-8">

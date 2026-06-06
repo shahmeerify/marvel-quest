@@ -1,16 +1,11 @@
-/**
- * MCU Chronological Dataset — editorial data only.
- * Poster paths, descriptions, and ratings are fetched from TMDB API
- * (VITE_TMDB_API_KEY) and cached in localStorage via useTMDBCache.
- * App works fully without the API key — images fall back to gradient placeholders.
- */
+import tmdbCache from './tmdb-cache.json'
 
 // Spider-Man path: minimum ~20 titles needed before Brand New Day
 const SP = true;
 // Essential MCU: full Avengers storyline (~46 titles)
 const ES = true;
 
-export const MCU_TITLES = [
+const RAW_TITLES = [
   // ── ERA: Legacy & Pre-MCU ─────────────────────────────────────────
   {
     id: 'eyes-of-wakanda',
@@ -23,7 +18,7 @@ export const MCU_TITLES = [
     runtime: 1.5,
     isEssential: false,
     isSpiderManPath: false,
-    tmdbId: 232786,
+    tmdbId: 241388,
     tmdbType: 'tv',
     streamingOn: 'Disney+',
     tags: ['Action', 'Wakanda', 'Anthology'],
@@ -1825,7 +1820,7 @@ export const MCU_TITLES = [
     runtime: 4.0,
     isEssential: false,
     isSpiderManPath: SP,
-    tmdbId: 202555,
+    tmdbId: 122226,
     tmdbType: 'tv',
     streamingOn: 'Disney+',
     tags: ['Action', 'Crime', 'Street Level', 'Native American'],
@@ -2055,7 +2050,7 @@ export const MCU_TITLES = [
     runtime: 8.5,
     isEssential: ES,
     isSpiderManPath: SP,
-    tmdbId: 202057,
+    tmdbId: 202555,
     tmdbType: 'tv',
     streamingOn: 'Disney+',
     tags: ['Action', 'Crime', 'Drama', 'Street Level'],
@@ -2152,7 +2147,7 @@ export const MCU_TITLES = [
     runtime: 8.5,
     isEssential: false,
     isSpiderManPath: false,
-    tmdbId: 202057,
+    tmdbId: 202555,
     tmdbType: 'tv',
     streamingOn: 'Disney+',
     tags: ['Action', 'Crime', 'Drama', 'Street Level'],
@@ -2201,6 +2196,12 @@ export const MCU_TITLES = [
     releaseDate: '2026-07-31',
   },
 ];
+
+// Merge pre-fetched TMDB metadata (posterPath, backdropPath, description, etc.)
+export const MCU_TITLES = RAW_TITLES.map(t => ({
+  ...t,
+  ...(tmdbCache[`${t.tmdbType}:${t.tmdbId}`] ?? {}),
+}))
 
 // ── Derived helpers ────────────────────────────────────────────────────────
 export const TOTAL = MCU_TITLES.length;

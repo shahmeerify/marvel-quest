@@ -11,29 +11,21 @@
   "lang": "en",
   "icons": [
     {
-      "src": "/icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "src": "/icons/icon-192.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     },
     {
-      "src": "/icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "src": "/icons/icon-512.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ],
   "categories": ["entertainment", "lifestyle"],
   "shortcuts": [
-    {
-      "name": "Watchlist",
-      "url": "/watchlist",
-      "description": "View your MCU watchlist"
-    },
-    {
-      "name": "Progress",
-      "url": "/progress",
-      "description": "Check your progress"
-    }
+    { "name": "Watchlist", "url": "/watchlist" },
+    { "name": "Progress",  "url": "/progress"  }
   ]
 }

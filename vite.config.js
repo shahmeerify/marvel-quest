@@ -3,6 +3,11 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    // Prevent Vite from bundling multiple copies of these in dev mode,
+    // which causes "Invalid hook call" and useContext(null) crashes.
+    dedupe: ['react', 'react-dom', 'react-router-dom'],
+  },
   build: {
     outDir: 'dist',
     sourcemap: false,
