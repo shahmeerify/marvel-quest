@@ -37,9 +37,9 @@ export default function App() {
     if (!settings.onboardingComplete) setShowOnboarding(true)
   }, [settings.onboardingComplete])
 
-  // Register service worker once
+  // Register service worker in production only — dev mode causes stale-cache issues
   useEffect(() => {
-    if ('serviceWorker' in navigator) {
+    if ('serviceWorker' in navigator && import.meta.env.PROD) {
       navigator.serviceWorker.register('/sw.js').catch(() => {})
     }
   }, [])

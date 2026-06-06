@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useApp } from '../context/AppContext'
@@ -51,11 +51,20 @@ function UpNextCard({ title, onOpen }) {
 
 export default function Home() {
   const { watchedSet, hoursWatched, avgRating, settings, addToast } = useApp()
-  const { isGuest, signInWithGoogle, signInWithGithub, supabaseEnabled } = useAuth()
+  const { isGuest, signInWithGoogle, supabaseEnabled } = useAuth()
   const { toggleWatched } = useWatchlist()
   const [selectedTitle, setSelectedTitle] = useState(null)
   const [trivia]  = useState(() => getDailyTrivia())
   const [showTrivia, setShowTrivia] = useState(true)
+
+  // Pick up welcome toast set by AuthCallback after OAuth redirect
+  useEffect(() => {
+    const name = sessionStorage.getItem('mq_welcome')
+    if (name) {
+      sessionStorage.removeItem('mq_welcome')
+      addToast({ type: 'success', message: `✓ Welcome back, ${name}!` })
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const activePath = settings.activePath ?? 'all'
   const pathTitles = activePath === 'spider'
@@ -102,12 +111,6 @@ export default function Home() {
               className="px-3 py-1.5 bg-white text-gray-900 rounded-lg text-xs font-semibold hover:bg-white/90 transition-colors"
             >
               G Google
-            </button>
-            <button
-              onClick={signInWithGithub}
-              className="px-3 py-1.5 bg-white/10 text-white rounded-lg text-xs font-medium hover:bg-white/15 transition-colors"
-            >
-              GitHub
             </button>
           </div>
         </div>

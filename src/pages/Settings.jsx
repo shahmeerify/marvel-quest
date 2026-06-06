@@ -36,7 +36,7 @@ function SettingRow({ label, description, children }) {
 }
 
 export default function Settings() {
-  const { user, isGuest, signInWithGoogle, signInWithGithub, signInWithEmail, signOut, supabaseEnabled } = useAuth()
+  const { user, isGuest, signInWithGoogle, signInWithEmail, signOut, supabaseEnabled } = useAuth()
   const { settings, updateSettings, syncFromSupabase, syncing, progress, achievements, addToast } = useApp()
   const [emailInput, setEmailInput]     = useState('')
   const [emailSent, setEmailSent]       = useState(false)
@@ -113,10 +113,7 @@ export default function Settings() {
                 <button onClick={signInWithGoogle} className="w-full flex items-center justify-center gap-2 py-2.5 bg-white text-gray-900 rounded-xl text-sm font-semibold hover:bg-white/90 transition-colors">
                   <span>G</span> Continue with Google
                 </button>
-                <button onClick={signInWithGithub} className="w-full flex items-center justify-center gap-2 py-2.5 bg-[#24292e] text-white rounded-xl text-sm font-semibold hover:bg-[#2f363d] border border-white/10 transition-colors">
-                  <span>⌨</span> Continue with GitHub
-                </button>
-                <div className="flex gap-2 mt-2">
+<div className="flex gap-2 mt-2">
                   <input
                     type="email"
                     value={emailInput}
